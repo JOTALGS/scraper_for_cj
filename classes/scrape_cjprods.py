@@ -48,8 +48,8 @@ class ScrapeCJProducts():
 
 
     def get_products_by_advertiser(self):
-        #hrefs = {'Flowers': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=857900'], 'Computer SW': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=6260179', 'https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=998086'], 'Virtual Malls': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4498040'], 'Toys': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=2357926'], 'Gifts': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4046728'], 'Electronic Games': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4518745'], 'Jewelry': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4295086']}  # Initialize an empty dictionary to store category-href pairs
-        hrefs = {}
+        hrefs = {'Flowers': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=857900'], 'Computer SW': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=6260179', 'https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=998086'], 'Virtual Malls': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4498040'], 'Toys': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=2357926'], 'Gifts': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4046728'], 'Electronic Games': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4518745'], 'Jewelry': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4295086']}  # Initialize an empty dictionary to store category-href pairs
+        #hrefs = {}
 
         if not hrefs:
             self.driver.implicitly_wait(20)
@@ -83,9 +83,9 @@ class ScrapeCJProducts():
 
                     # Find all <a> tags within the get-products-container
                     a_tags = get_products_container.find_elements(By.TAG_NAME, "a")
-                except:
+                except Exception as e:
                     # If not present, find <a> tags within the row directly
-                    print("no get-products-container")
+                    print("no get-products-container", e)
                     a_tags = row.find_elements(By.TAG_NAME, "a")
 
                 # Extract href attributes and store them in the dictionary
@@ -106,8 +106,16 @@ class ScrapeCJProducts():
         self.driver.refresh() 
         self.driver.implicitly_wait(15)
         file_path = os.path.join('cjproducts', 'data_dictionary.json')
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         i=0
 
+        # Check if the file exists
+        if not os.path.isfile(file_path):
+            print(f"File {file_path} does not exist. Creating an empty file.")
+            with open(file_path, 'w') as file:
+                json.dump({}, file)
+                
         # Open and load the JSON content from the file
         with open(file_path, 'r') as file:
             data = json.load(file)
@@ -158,6 +166,8 @@ class ScrapeCJProducts():
                     a_element = li_element.find_element(By.TAG_NAME, "a")
                     a_element.click()
 
+                    encypt_link = row.find_element(By.ID, "encrypt")
+                    encypt_link.click()
 
                     url_element = row.find_element(By.ID, "clickUrlLabel")
                     # Locate the <a> element that provides the ref link
@@ -181,6 +191,30 @@ class ScrapeCJProducts():
                     # Retrieve content from the clipboard
                     text_content = pyperclip.paste()
                     print('\nlink: ', text_content)
+
+                    if 'dpbolvw' in text_content:
+                        print('dpbolvw link unusable')
+                        # Locate the anchor element by its class name
+                        anchor = row.find_element(By.CSS_SELECTOR, 'a.button.update-code-button.ui-btn.secondary.uppercase')
+                        # Click the anchor element
+                        anchor.click()
+                        sleep(1)
+                        url_click_tab = row.find_element(By.ID, "clickUrlTab")
+                        # Locate and interact with the element containing the desired text
+                        textarea = WebDriverWait(url_click_tab, 20).until(
+                            EC.presence_of_element_located((By.CLASS_NAME, "clickUrlCode"))
+                        )
+                        # Focus on the textarea
+                        textarea.click()
+                        sleep(1)
+                        # Select all content and copy it
+                        textarea.send_keys(Keys.CONTROL + 'a')  # Select all
+                        textarea.send_keys(Keys.CONTROL + 'c')  # Copy to clipboard
+                        # Wait a short time to ensure clipboard operation completes
+                        sleep(1)
+                        # Retrieve content from the clipboard
+                        text_content = pyperclip.paste()
+
                     data[name]['link'] = text_content
                     sleep(2)
                     
