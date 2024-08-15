@@ -1,4 +1,5 @@
 import os
+import random
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
@@ -126,7 +127,8 @@ class PublishInPinterest():
             button.click()
 
             # Pause for 15 seconds to observe the result
-            sleep(15)
+            random_int = random.randint(12, 25)
+            sleep(random_int)
             return True
         except:
             return False

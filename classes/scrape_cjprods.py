@@ -48,7 +48,7 @@ class ScrapeCJProducts():
 
 
     def get_products_by_advertiser(self):
-        hrefs = {'Flowers': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=857900'], 'Computer SW': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=6260179', 'https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=998086'], 'Virtual Malls': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4498040'], 'Toys': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=2357926'], 'Gifts': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4046728'], 'Electronic Games': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4518745'], 'Jewelry': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4295086']}  # Initialize an empty dictionary to store category-href pairs
+        hrefs = {'Flowers': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=857900'], 'Computer SW': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=6260179', 'https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=998086'], 'Virtual Malls': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4498040'], 'Toys': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=2357926'], 'Gifts': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4046728'], 'Electronic Games': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4518745'], 'Jewelry': ['https://members.cj.com/member/6774140/publisher/links/search/#!tab=products&advertiserIds=4295086']}
         #hrefs = {}
 
         if not hrefs:
@@ -78,8 +78,8 @@ class ScrapeCJProducts():
                 try:
                     nested_div_lvl0 = row.find_element(By.CLASS_NAME, "adv-row")
                     nested_div_lvl1 = nested_div_lvl0.find_element(By.CLASS_NAME, "main-row-wrapper")
-                    nested_div_lvl2 = nested_div_lvl1.find_element(By.CLASS_NAME, "buttons adv-row-vertical-sep")
-                    get_products_container = nested_div_lvl2.find_element(By.CLASS_NAME, "get-products-container")
+                    #nested_div_lvl2 = nested_div_lvl1.find_element(By.CLASS_NAME, "buttons adv-row-vertical-sep")
+                    get_products_container = nested_div_lvl1.find_element(By.CLASS_NAME, "get-products-container")
 
                     # Find all <a> tags within the get-products-container
                     a_tags = get_products_container.find_elements(By.TAG_NAME, "a")
